@@ -5,7 +5,6 @@
  * @version $Id$
  */
 
-
 var jsoncode=(function(){
 	/*	imgzip：图片压缩，
 	*	json:
