@@ -14,7 +14,8 @@ CanvasRenderingContext2D.prototype.sector=function(x,y,r,sAngle,eAngle,color){
 	this.save();
 }
 
-// 获取标签
+//example 
 var bgcanvas = document.querySelector("#bgcanvas");
 var ctx = bgcanvas.getContext("2d");
 ctx.sector(250,250,200,0,2*Math.PI,"#fff");
+//end  example
