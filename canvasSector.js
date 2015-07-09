@@ -4,7 +4,6 @@
  * @date    2015-07-09 15:11:40
  * @version $Id$
  */
-
 CanvasRenderingContext2D.prototype.sector=function(x,y,r,sAngle,eAngle,color){
 	this.moveTo(x,y);
 	this.arc(x,y,r,sAngle,eAngle);
@@ -13,7 +12,6 @@ CanvasRenderingContext2D.prototype.sector=function(x,y,r,sAngle,eAngle,color){
 	this.fill();
 	this.save();
 }
-
 //example 
 var bgcanvas = document.querySelector("#bgcanvas");
 var ctx = bgcanvas.getContext("2d");
