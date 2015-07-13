@@ -44,6 +44,9 @@ td{
 	</thead>
 	<tbody>
 <?php
+	//hexdec:十六进制 转成十进制
+	//dechex:十进制 转成十六进制
+	
 	$min1 = hexdec("1F300");
 	$max1 = hexdec("1F6Ff");
 
