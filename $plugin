@@ -1,0 +1,160 @@
+/**
+ * 
+ * @authors 石亚南 (you@example.org)
+ * @date    2015-07-24 15:46:52
+ * @version $Id$
+ */
+
+(function($) {
+    if (jQuery === $) {
+        $.fn.loadBtn = function(type) {
+            var self = this;
+            var txt = self.data("loading-text");
+            var oldTxt = "";
+            if (self.data("loading-oldTxt")) {
+                oldTxt = self.data("loading-oldTxt");
+            } else {
+                oldTxt = self.html();
+                self.data("loading-oldTxt", oldTxt);
+            }
+            if (type == "loading") {
+                self.html(txt).prop("disabled", true);
+            } else if (type == "reset") {
+                self.html(oldTxt).prop("disabled", false);
+            }
+        };
+        $.alert = function(msg, bg) {
+            var body = $("body");
+            var message = msg;
+            var bgColor = bg || "success";
+            var style = '#x-alert-cover{z-index:1500;top:0;right:0;max-height:100%;width:300px;position:fixed;overflow-x:hidden;overflow-y:auto;font-family:"Helvetica Neue","Hiragino Sans GB","Microsoft YaHei","\9ED1\4F53",Arial,sans-serif}#x-alert-cover::-webkit-scrollbar{width:0;height:0}#x-alert-cover .xAlert{color:#fff;margin:5px 0;font-size:14px;border-radius:3px;padding:15px;overflow:hidden;background-repeat:no-repeat;background-position:15px center}#x-alert-cover .xAlert.xAlert-success{background-color:#51a351}#x-alert-cover .xAlert.xAlert-error{background-color:#bd362f}#x-alert-cover .xAlert.xAlert-default{background-color:#1FBC98}';
+
+            var styleDom = $("#xalert-style");
+            if (styleDom.size() == 0) {
+                $("head").append('<style id="xalert-style">' + style + '</style>');
+            }
+            var alertCover = $("#x-alert-cover");
+            if (alertCover.size() == 0) {
+                body.append('<div id="x-alert-cover"></div>')
+                alertCover = $("#x-alert-cover");
+            }
+            var newAlert = $('<div class="xAlert xAlert-' + bgColor + '">' + message + '</div>');
+            alertCover.prepend(newAlert);
+
+            function action(time) {
+                newAlert.delay(time).animate({
+                    height: 0,
+                    paddingTop: 0,
+                    paddingBottom: 0,
+                    opacity: 0
+                }, 300, function() {
+                    $(this).remove();
+                })
+            }
+            action(1500);
+            newAlert.hover(function() {
+                $(this).clearQueue();
+            }, function() {
+                action(1000);
+            });
+
+            newAlert.click(function(event) {
+                action(0);
+            });
+            return message;
+        };
+        $.confirm = function(msg, fn) {
+            var body = $("body");
+            var dom = '<div class="confirm-window"><div class="confirm-heading">消息提示</div><div class="confirm-body"><div class="confirm-body-txt">' + msg + '</div></div><div class="confirm-footer"><div class="confirm-btn confirm-cancle-btn" tabindex="100">取消</div><div class="confirm-btn confirm-confirm-btn" tabindex="99">确定</div></div></div>';
+            var style = '#confirm-cover{opacity:1;transform:scale(.5);transition-duration:.3s;top:0;left:0;bottom:0;right:0;color:#555;font-size:13px;padding:10px;z-index:1100;box-sizing:border-box;position:fixed;overflow:hidden;background-color:rgba(0,0,0,.5)}#confirm-cover .confirm-window{background-color:#fff;border-radius:3px;overflow:hidden;}#confirm-cover .confirm-heading{height:40px;line-height:40px;padding-left:10px;background:#eaeaea;background:-webkit-linear-gradient(top,#fff,#eaeaea);background:linear-gradient(top,#fff,#eaeaea)}#confirm-cover .confirm-body{display:table;width:100%;height:140px;overflow-x:hidden;overflow-y:auto;padding:20px;box-sizing:border-box;word-break:break-all;word-wrap:break-word;}#confirm-cover .confirm-body .confirm-body-txt{display:table-cell;vertical-align:middle;text-align:center;}#confirm-cover .confirm-footer{height:50px;padding:0 20px;line-height:50px;text-align:center;background:#e4e4e4;background:-webkit-linear-gradient(bottom,#F9F9F9,#E4E4E4);background:linear-gradient(bottom,#F9F9F9,#E4E4E4)}#confirm-cover .confirm-footer .confirm-btn{outline:0;display:inline-block;height:32px;margin:9px 5px;padding:0 20px;line-height:32px;text-align:center;border-radius:16px;cursor:pointer;}.confirm-footer .confirm-cancle-btn{background-color:#fff}.confirm-footer .confirm-cancle-btn:hover{background-color:#ddd}.confirm-footer .confirm-confirm-btn{background-color:#0988EA;color:#fff}.confirm-footer .confirm-confirm-btn:hover{background-color:#1075C3}@media (min-width:769px){#confirm-cover .confirm-window{width:400px;margin:100px auto;position:absolute;left:50%;margin-left:-200px;top:50%;margin-top:-115px;}}@media (max-width:768px){#confirm-cover .confirm-window{width:100%;margin:30px auto}}';
+            var styleDom = $("#confirm-style");
+            if (styleDom.size() == 0) {
+                $("head").append('<style id="confirm-style">' + style + '</style>');
+            }
+            var confirmDom = $("#confirm-cover");
+            if (confirmDom.size() == 0) {
+                body.append('<div id="confirm-cover">' + dom + '</div>');
+                confirmDom = $("#confirm-cover");
+            } else {
+                confirmDom.html(dom);
+            }
+            setTimeout(function() {
+                confirmDom.find('.confirm-window').animate({
+                    top: 0,
+                    marginTop: 115,
+                });
+                confirmDom.css({
+                    "transform": "scale(1)",
+                });
+            }, 10);
+            $(".confirm-cancle-btn").click(function() {
+                confirmDom.find('.confirm-window').animate({
+                    top: "50%",
+                    marginTop: "-115",
+                });
+                confirmDom.css({
+                    "transform": "scale(.5)",
+                    opacity: 0
+                });
+                setTimeout(function() {
+                    confirmDom.remove();
+                }, 500);
+            });
+            $(".confirm-confirm-btn").click(function() {
+                fn();
+                confirmDom.find('.confirm-window').animate({
+                    top: "50%",
+                    marginTop: "-115",
+                });
+                confirmDom.css({
+                    "transform": "scale(.3)",
+                    opacity: 0
+                });
+                setTimeout(function() {
+                    confirmDom.remove();
+                }, 500);
+            });
+
+            $(".confirm-confirm-btn").focus().keyup(function(event) {
+                var code = window.event.keyCode;
+                if (code == 32 || code == 13) {
+                    fn();
+                    confirmDom.find('.confirm-window').animate({
+                        top: "50%",
+                        marginTop: "-115",
+                    });
+                    confirmDom.css({
+                        "transform": "scale(.3)",
+                        opacity: 0
+                    });
+                    setTimeout(function() {
+                        confirmDom.remove();
+                    }, 500);
+                } else if (code == 27) {
+                    confirmDom.find('.confirm-window').animate({
+                        top: "50%",
+                        marginTop: "-115",
+                    });
+                    confirmDom.css({
+                        "transform": "scale(.3)",
+                        opacity: 0
+                    });
+                    setTimeout(function() {
+                        confirmDom.remove();
+                    }, 500);
+                }
+            });
+        }
+    }
+})($);
+/*
+$(selector)loadBtn("loading");
+$(selector)loadBtn("reset");
+$.alert("msg");
+$.confirm("msg", function() {
+    //confirm
+});
+
+ */
+
+
